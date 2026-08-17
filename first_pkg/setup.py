@@ -24,7 +24,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'node1 = first_pkg.node1:main'
+            'node1 = first_pkg.node1:main',
+            'move = first_pkg.movementNode:main',
+            'brain = first_pkg.brainNode:main',
         ],
     },
 )
