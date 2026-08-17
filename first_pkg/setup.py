@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'Our_robot'
+package_name = 'first_pkg'
 
 setup(
     name=package_name,
@@ -16,7 +16,7 @@ setup(
     maintainer='omar',
     maintainer_email='“omargomaa9102006@gmail.com”',
     description='TODO: Package description',
-    license='TODO: License declaration',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'node1 = first_pkg.node1:main'
         ],
     },
 )
