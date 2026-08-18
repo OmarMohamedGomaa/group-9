@@ -54,6 +54,15 @@ class actionServer(Node):
         self.publisher_.publish(twist)
         self.get_logger().info("Yaw rotation finished!")
 
+    def current_pose(self,msg:Odometry):
+        self.Pose = (msg.pose.pose.position.x , msg.pose.pose.position.y )
+        self.current_yaw = (msg.pose.pose.orientation.z,msg.pose.pose.orientation.w)
+        time.sleep(1)
+        output = f"""
+                     Pos:{self.Pose}
+                     orientation:{self.current_yaw}
+                     Linear :{(msg.twist.twist.linear.x,msg.twist.twist.linear.y)}
+                     angular: {(msg.twist.twist.angular.z)}"""
 
 def main(args = None):
     rclpy.init(args=args)
