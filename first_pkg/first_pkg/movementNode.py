@@ -21,21 +21,38 @@ class actionServer(Node):
         pass
 
     def moveYaw(self,Yaw):
-        #implement action not just a function
-        pass
+        rclpy.spin_once(self)
+        start_angle = self.current_yaw
 
-    def current_pose(self,msg:Odometry):
-        self.Pose = (msg.pose.pose.position.x , msg.pose.pose.position.y )
-        self.current_yaw = (msg.pose.pose.orientation.z,msg.pose.pose.orientation.w)
-        time.sleep(1)
-        output = f"""
-                     Pos:{self.Pose}
-                     orientation:{self.current_yaw}
-                     Linear :{(msg.twist.twist.linear.x,msg.twist.twist.linear.y)}
-                     angular: {(msg.twist.twist.angular.z)}"""
-                     
-        self.get_logger().info(output)
-        pass
+        
+
+        twist = Twist()
+        speed = 0.4
+        twist.angular.z = speed if Yaw > 0 else -speed #set the rotation direction (positive = left, negative = right)
+
+        
+        while rclpy.ok(): #spin until the robot reaches the angle we want 
+            rclpy.spin_once(self)
+
+            # measure how much the robot has turned so far
+            angle_turned = self.current_yaw - start_angle
+
+            # handle passing the 180-degree boundary (-pi / +pi)
+            if angle_turned > 3.14159:
+                angle_turned -= 2 * 3.14159
+            elif angle_turned < -3.14159:
+                angle_turned += 2 * 3.14159
+
+            # stop condition: reached or exceeded target angle
+            if abs(angle_turned) >= abs(Yaw):
+                break
+
+            self.publisher_.publish(twist)
+
+        #stop the rotation
+        twist.angular.z = 0.0 
+        self.publisher_.publish(twist)
+        self.get_logger().info("Yaw rotation finished!")
 
 
 def main(args = None):
